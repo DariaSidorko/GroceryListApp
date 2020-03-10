@@ -1,0 +1,91 @@
+
+<div class="search-header">
+
+  <div class="app-header"> Grocery Manager </div>
+
+  <!-- Search input-->
+  <div class="row justify-content-center">
+      <div class="col-sm-6 col-sm-6 col-md-4">
+          <div class="input-group">
+              <input type="text" class="form-control" placeholder="search grocery item" id="txtSearch" [(ngModel)]="task" >
+              <div class="input-group-btn">
+                  <button class="btn btn-primary" type="button" (click)="onClickSearch()" (click)="onClickShowList()" (click)="onClickHideItem()">
+                    <span class="glyphicon glyphicon-search"></span>
+                  </button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+</div>
+
+
+<!-- SHOW - HIDE SECTION onClickShow / onClickHide-->
+  
+  <!-- Search result list -->
+  <div *ngIf="showList">
+    
+    <div class="list-container" *ngIf="items">
+      <div class="cross-icon"> 
+        <i class="glyphicon glyphicon-remove" style="font-size: 30px;" (click)="onClickHideList()"></i>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-sm-2 product-list" *ngFor="let listItem of list" >
+          <div><img [src]="listItem.image" class="product-image"></div> 
+          <div class="list-product-title">{{ listItem.title }}</div>
+          <div class="list-details">
+            <a class="list-details-link" (click)="onClickDetails(list.id)" (click)="onClickShowItem()">Product Details<span class="glyphicon glyphicon-chevron-right"></span></a> 
+          </div>
+          <button class="btn btn-primary button-list" type="button" (click)="onClickAdd(listItem)" (click)="onClickHideList()"> Add to list</button>
+        </div>
+      </div>
+    </div> 
+
+  <!-- Details of the list item -->
+    <div *ngIf="showItem">
+      <div class="item-container" *ngIf="item" >
+        <div class="row justify-content-center">
+          <div class="col-md-2 justify-content-center">
+            <div><img [src]="item.images" class="item-image"></div> 
+          </div>
+          <div class="col-md-5 item-product">
+            <div class="item-product-title">{{ item.title }}</div>
+            <div class="item-details">
+            <div> <b>Calories:</b> {{ item.calories }}</div> 
+            <div> <b>Aisle:</b> {{ item.aisle }}</div>  
+            <div> <b>Price:</b> ${{ item.price/100 }}</div>
+            <div> <b>Serving number:</b> {{ item.numberOfServings }} </div>
+            </div>
+            <div style="padding-bottom: 3%;"> <b>Ingridients:</b> {{ item.ingredientList }} </div>
+            <button class="btn btn-primary" type="button" (click)="onClickAdd(item)" (click)="onClickHideList()"> Add to list</button>
+          </div>
+        </div>
+      </div> 
+    </div>
+
+  </div>
+
+<!-- END of SHOW - HIDE SECTION onClickShow / onClickHide-->
+
+  <!-- User's Grocery List  -->
+<div class="container task-container" *ngIf="tasks.length != 0">
+  <div class="task-title">Your Grocery List</div>
+  <div class="list-group-item form-check" *ngFor="let task of tasks">       
+    <div class="row task-body">  
+        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+        <label class="form-check-label " for="defaultCheck1"> </label> 
+        <div class="col-md-7" style="margin-left: 15px;">{{ task.title }} </div>
+        <div class="col-md">${{ task.price/100 }} </div>
+        <div class="col-md">{{ task.aisle }}</div>
+
+          <div class="col-md button-delete-task">
+            <button class="btn btn-primary " type="button" (click)="onClickDelete(task.id)">
+              <span class="glyphicon glyphicon-trash"></span>
+            </button>
+          </div>
+        </div>  
+        <hr>
+  </div>
+</div>
+
+<div class="page-footer footer"></div>
