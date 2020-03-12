@@ -5,7 +5,7 @@ div{
 
 .search-header{
   background-color: #14ADB9;
-  padding: 2%;
+  padding: 0.75%;
 }
 
 .app-header{
@@ -13,7 +13,7 @@ div{
   font-size: 35px;
   /* text-transform: uppercase; */
   font-weight: 100;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
   text-align: center;
   background-color: #14ADB9;
   color: aliceblue;
@@ -48,7 +48,7 @@ h2{
   margin: 10px;
   padding: 15px;
   text-align: center;
-  height: 270px;
+  height: 230px;
   max-width: 180px;
   position: relative;
   background-color: #FFFFFF;
@@ -154,22 +154,48 @@ h2{
 }
 
 
-
-
-
-
 /* TASK */
 
 .task-container{
-  padding-top: 3%;
+  padding: 3% 8%;
+}
+
+.task-body{
+  font-size: 14px;
+  text-align: left;
 }
 
 .task-title{
   font-size: 26px;
   font-weight: 500;
   color: #FB5629;
-  padding-bottom: 2%;
 }
+
+.task-edit{
+  padding: 3% 3%;
+  margin: 0 10% 3% 10%;
+  background-color: rgb(240, 240, 240);
+  font-size: 14px;
+  text-align: left;
+}
+
+div.task-col:nth-child(even) {background: rgb(240, 240, 240)}
+
+.task-totalbill{
+  font-size: 22px;
+  color: rgb(19, 154, 163);
+  padding: 1% 0 4% 0;
+}
+
+.hr-totalbill{
+  border: 1.2px solid rgba(19, 154, 163, 0.3);
+  margin-top: 2%;
+}
+
+.totalbill{
+  padding-left: 5%;
+}
+
 
 .list-group-item{
   border: none;
@@ -184,10 +210,15 @@ input[type=checkbox]:focus{
   color: #FB5629;
 }
 
-.task-body{
-  font-size: 14px;
-  text-align: left;
+.task-done{
+  color: rgb(194, 194, 194);
+  text-decoration:line-through;
 }
+
+.task-hover :hover{
+  color: #14ADB9;
+}
+/* END - TASK*/
 
 
 .footer {

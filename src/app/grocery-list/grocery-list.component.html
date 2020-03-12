@@ -9,23 +9,69 @@
           <div class="input-group">
               <input type="text" class="form-control" placeholder="search grocery item" id="txtSearch" [(ngModel)]="task" >
               <div class="input-group-btn">
-                  <button class="btn btn-primary" type="button" (click)="onClickSearch()" (click)="onClickShowList()" (click)="onClickHideItem()">
+                  <!-- Search button-->
+                  <button class="btn btn-primary" type="button" 
+                          (click)="onClickSearch()" 
+                          (click)="onClickSearchInvalidInputShow()"
+                          (click)="onClickShowList()" 
+                          (click)="onClickHideItem()" 
+                          (click)="onClickHideCustomItem()">
                     <span class="glyphicon glyphicon-search"></span>
+                  </button>
+                  <!-- Custom Item Button-->
+                  <button class="btn btn-primary" type="button" (click)="onClickShowCustomItem()" (click)="onClickHideList()" (click)="onClickSearchInvalidInputHide()"> 
+                    <span style="margin-right: 10px;">add custom item</span><span class="glyphicon glyphicon-plus"></span>
                   </button>
               </div>
           </div>
       </div>
   </div>
+  <!-- END -  Search input-->
 
 </div>
 
 
-<!-- SHOW - HIDE SECTION onClickShow / onClickHide-->
-  
-  <!-- Search result list -->
+<!-- Add Custom Item-->
+<div class="row list-container" *ngIf="showCustomItem">
+  <div class="col-md-7" style="margin-left: 15px;">
+    <input type="text" class="form-control" placeholder="custom grocery item" id="itemEdit" [(ngModel)]="newCustomItem" >
+  </div>
+  <div class="col-md">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="price" id="itemEdit" [(ngModel)]="newCustomPrice" >
+    </div>
+  </div>
+  <div class="col-md">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="quantity" id="itemEdit" [(ngModel)]="newCustomQuantity" >
+    </div>
+  </div>
+  <div class="col-md">
+    <input type="text" class="form-control" placeholder="aisle" id="itemEdit" [(ngModel)]="newCustomAisle" >
+  </div>
+  <div class="col-md button-delete-task">
+    <button class="btn btn-primary " type="button"  (click)="onClickAddCustomItem()" (click)="onClickHideCustomItem()" >
+      <span class="glyphicon glyphicon-ok floatright"></span>
+    </button>
+    <button class="btn btn-primary " type="button" (click)="onClickHideCustomItem()" >
+      <span class="glyphicon glyphicon-remove floatright"></span>
+    </button>
+  </div>
+</div>
+<!--END - Add Custom Item-->
+
+
+<!-- Ivalid Search Input Message-->
+<div class="row list-container task-body" *ngIf="InvalidInputShow">
+  No data was found in our database with your request. You can always add custom item to your list.
+</div>
+
+
+<!-- API call results section for list search and for each item-->
   <div *ngIf="showList">
-    
-    <div class="list-container" *ngIf="items">
+
+    <!-- Search result for the list of items -->
+    <div class="list-container" *ngIf="list.length > 0">
       <div class="cross-icon"> 
         <i class="glyphicon glyphicon-remove" style="font-size: 30px;" (click)="onClickHideList()"></i>
       </div>
@@ -34,14 +80,15 @@
           <div><img [src]="listItem.image" class="product-image"></div> 
           <div class="list-product-title">{{ listItem.title }}</div>
           <div class="list-details">
-            <a class="list-details-link" (click)="onClickDetails(list.id)" (click)="onClickShowItem()">Product Details<span class="glyphicon glyphicon-chevron-right"></span></a> 
+            <a class="list-details-link button-list" (click)="onClickDetails(listItem.id)" (click)="onClickShowItem()">Product Details<span class="glyphicon glyphicon-chevron-right"></span></a> 
           </div>
-          <button class="btn btn-primary button-list" type="button" (click)="onClickAdd(listItem)" (click)="onClickHideList()"> Add to list</button>
+          <!-- <button class="btn btn-primary button-list" type="button" (click)="onClickAdd(listItem)" (click)="onClickHideList()"> Add to list</button> -->
         </div>
       </div>
     </div> 
+    <!--END - Search result list -->
 
-  <!-- Details of the list item -->
+    <!-- Search result for the details of the each item in the list -->
     <div *ngIf="showItem">
       <div class="item-container" *ngIf="item" >
         <div class="row justify-content-center">
@@ -53,7 +100,7 @@
             <div class="item-details">
             <div> <b>Calories:</b> {{ item.calories }}</div> 
             <div> <b>Aisle:</b> {{ item.aisle }}</div>  
-            <div> <b>Price:</b> ${{ item.price/100 }}</div>
+            <div> <b>Price:</b> ${{ item.price }}</div>
             <div> <b>Serving number:</b> {{ item.numberOfServings }} </div>
             </div>
             <div style="padding-bottom: 3%;"> <b>Ingridients:</b> {{ item.ingredientList }} </div>
@@ -64,28 +111,91 @@
     </div>
 
   </div>
+<!-- END - API call results for Search list and for each item-->
 
-<!-- END of SHOW - HIDE SECTION onClickShow / onClickHide-->
 
-  <!-- User's Grocery List  -->
-<div class="container task-container" *ngIf="tasks.length != 0">
+<!-- User's Grocery List -->
+<div class="task-container" >
+
+  <!-- Header -->
   <div class="task-title">Your Grocery List</div>
-  <div class="list-group-item form-check" *ngFor="let task of tasks">       
-    <div class="row task-body">  
-        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-        <label class="form-check-label " for="defaultCheck1"> </label> 
-        <div class="col-md-7" style="margin-left: 15px;">{{ task.title }} </div>
-        <div class="col-md">${{ task.price/100 }} </div>
-        <div class="col-md">{{ task.aisle }}</div>
-
-          <div class="col-md button-delete-task">
-            <button class="btn btn-primary " type="button" (click)="onClickDelete(task.id)">
-              <span class="glyphicon glyphicon-trash"></span>
-            </button>
-          </div>
-        </div>  
-        <hr>
+  <hr>
+  <!-- Empty list message -->
+  <div *ngIf="tasks.length == 0">
+    <div class="task-body">Your grocery list is currently empty. Please add items to your list.</div>
   </div>
+
+  <!-- If list has items condition -->
+  <div *ngIf="tasks.length != 0">
+
+    <!-- Grocery item edit section -->
+    <div class="task-edit" *ngIf="showEdit">
+      <div class="row ">
+        <div class="col-md-5" style="margin-left: 15px;">Please edit your item here </div>
+        <div class="col-md">New Price</div>
+        <div class="col-md">New Quantity </div>
+        <div class="col-md"></div>
+        <div class="col-md"></div>
+      </div>
+      <div class="row">
+        <div class="col-md-5" style="padding-left: 15px;">{{ taskToEdit.title }} </div>
+        <div class="col-md">
+          <div class="input-group">
+            <input type="number" class="form-control" placeholder={{taskToEdit.price}} id="itemEdit" [(ngModel)]="newPrice" >
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="input-group">
+            <input type="number" class="form-control" placeholder={{taskToEdit.quantity}} id="itemEdit" [(ngModel)]="newQuantity" >
+          </div>
+        </div>
+        <div class="col-md">{{ task.aisle }}</div>
+        <div class="col-md button-delete-task">
+          <button class="btn btn-primary " type="button" (click)="onClickUpdateEdit()" >
+            <span class="glyphicon glyphicon-ok floatright"></span>
+          </button>
+          <button class="btn btn-primary " type="button" (click)="onClickUpdateHide()">
+            <span class="glyphicon glyphicon-remove floatright"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- END - Grocery item edit section -->
+
+
+    <!-- Grocery items output section -->
+    <div class="list-group-item form-check task-col" *ngFor="let task of tasks">       
+      <div class="row task-body task-hover">  
+        <div class="col-xl-10" (click)="taskDone(task)" [ngClass]="{'task-done': task.isdone}">
+          <div class="col-md-6" stile="min-width: 300px" style="margin-left: 15px;">{{ task.title }} </div>
+          <div class="col-md-2">${{ task.price }} </div>
+          <div class="col-md-1">qty: {{ task.quantity }}</div>
+          <div class="col-md-2 justify-content-center">{{ task.aisle }}</div>
+        </div> 
+        <div class="col-xl-2 justify-content-center" >
+            <div class="col-lg justify-content-center">
+              <button class="btn btn-primary " type="button" (click)="onClickEdit(task)">
+                <span class="glyphicon glyphicon-pencil "></span>
+              </button>
+              <button class="btn btn-primary " type="button" (click)="onClickDelete(task.id)">
+                <span class="glyphicon glyphicon-trash"></span>
+              </button>
+            </div>
+          </div>
+      </div>  
+
+    </div>
+    
+    <!-- Total Bill output section -->
+    <div class="task-totalbill">
+      <hr class="hr-totalbill">
+      <div class="totalbill">Total Bill: $ {{ totalBill}}</div>
+    </div>
+
+  </div>
+<!-- END - Grocery items output section -->
+
 </div>
+<!-- END - User's Grocery List -->
 
 <div class="page-footer footer"></div>
