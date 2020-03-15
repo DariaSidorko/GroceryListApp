@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, Input } from '@angular/core';
 import { GroceryService } from '../grocery.service';
-import { Observable } from 'rxjs';
-import { ICurrentList, ICurrentItem, ICurrentSearchList } from '../icurrent-list';
+import { ICurrentItem, ICurrentTrivia, ICurrentList } from '../icurrent-list';
+
 
 
 @Component({
@@ -13,18 +13,29 @@ import { ICurrentList, ICurrentItem, ICurrentSearchList } from '../icurrent-list
 })
 export class GroceryListComponent implements OnInit {
 
-  list: ICurrentSearchList[] = [];
+  list: ICurrentList[] = [];
+  frontList: ICurrentList[] = [];
+  frontListItems = ["Organic Valley Whole Milk", "Large Brown Eggs", "Avocado oil", "Yogurt organic whole milk", "Milk chocolate swiss", "Granny apples" ];
   item: ICurrentItem;
   totalBill: number = 0;
+  totalItems: number = 0;
+  trivia: ICurrentTrivia;
+
+
+
   constructor(private groceryService: GroceryService) { }
 
   ngOnInit() {
-    
+    let numGen = Math.floor(Math.random() * 6)
+    this.groceryService.getCurrnetTrivia().subscribe(data => this.trivia = data); 
+    this.groceryService.getCurrnetList(this.frontListItems[numGen]).subscribe(data => this.frontList = data);
+
   }
 
   task: string = '';
   taskTemp: string;
   tasks = new Array;
+
 
   /* ID generator for custom items */
   customId: number = Math.floor(Math.random() * (100000000 - 1000000000)) + 1000000000;
@@ -34,17 +45,27 @@ export class GroceryListComponent implements OnInit {
     if (this.task && this.task.trim().length !== 0){
         this.groceryService.getCurrnetList(this.task).subscribe(data => this.list = data);
     } 
+    this.task =''
    }
+
+   showFrontItem = false;
+   onClickShowFrontItem(){
+     this.showFrontItem == false ? this.showFrontItem = true : undefined;
+   }
+   onClickHideFrontItem(){
+     this.showFrontItem == true ? this.showFrontItem = false : undefined;
+   }
+
 
    /* Search show/hide results */
    showList = false;
    onClickShowList(){
      this.showList == false ? this.showList = true : undefined;
+     for (var key in this.list)
+     delete this.list[key];
    }
    onClickHideList(){
      this.showList == true ? this.showList= false : undefined;
-     for (var key in this.item)
-     this.list.pop();
    }
 
   /* SECOND API CALL for each item detaios */
@@ -56,23 +77,12 @@ export class GroceryListComponent implements OnInit {
    showItem = false;
    onClickShowItem(){
      this.showItem == false ? this.showItem = true : undefined;
+     delete this.item;
    }
    onClickHideItem(){
      this.showItem == true ? this.showItem = false : undefined;
    }
  
-   /* INPUT VALIDATION: empty string show/hide */
-   InvalidInputShow : boolean = false;
-   onClickSearchInvalidInputShow(){
-    if(this.task =='' || this.task.trim().length == 0){
-      this.InvalidInputShow == false ? this.InvalidInputShow= true : undefined;
-    }
-    this.task =''
-   }
-   onClickSearchInvalidInputHide(){  
-    this.InvalidInputShow == true ? this.InvalidInputShow= false : undefined;
- }
-
   /* ADD ITEM from search func */
   onClickAdd(item){
     this.tasks.push(
@@ -83,10 +93,16 @@ export class GroceryListComponent implements OnInit {
         aisle: item.aisle,
         quantity: 1,
         dateTime: (new Date()).getTime(),
-        isdone: false
+        isdone: false,
+        showEdit: false
       }))
+
+      this.tasks.sort((a, b) => a.aisle < b.aisle ? -1 : a.aisle > b.aisle ? 1 : 0);
+
       this.totalBill += item.price;
       this.totalBill.toFixed(2);
+      
+      this.totalItems ++;
   }
 
   /* ADD CUSTOM ITEM func */
@@ -97,21 +113,32 @@ export class GroceryListComponent implements OnInit {
 
   onClickAddCustomItem(){
     this.customId++;
+    let tempPrice: number, tempQuantity;
+    this.newCustomPrice ? tempPrice = parseFloat(this.newCustomPrice) : tempPrice = 0;
+    parseFloat(this.newCustomQuantity) > 0 ? tempQuantity = parseFloat(this.newCustomQuantity) : tempQuantity = 1;
     this.tasks.push(
       new Object ({
         id: this.customId,
         title: this.newCustomItem,
-        price: this.newCustomPrice,
-        quantity: this.newCustomQuantity,
+        price: tempPrice,
+        quantity: tempQuantity,
         aisle: this.newCustomAisle,
         dateTime: (new Date()).getTime(),
-        isdone: false
+        isdone: false,
+        showEdit: false
       }))
 
-      if (parseInt(this.newCustomQuantity) != 0){
-      this.totalBill += parseInt(this.newCustomPrice) * parseInt(this.newCustomQuantity);
+      this.totalBill += tempPrice * tempQuantity;
       this.totalBill.toFixed(2);
-      }
+      
+      this.totalItems ++;
+
+      this.tasks.sort((a, b) => a.aisle < b.aisle ? -1 : a.aisle > b.aisle ? 1 : 0);
+
+      this.newCustomItem = ''; 
+      this.newCustomPrice = ''; 
+      this.newCustomQuantity = ''; 
+      this.newCustomAisle = '';
   }
 
   /* Custom Item show/hide func */
@@ -124,45 +151,47 @@ export class GroceryListComponent implements OnInit {
   }
 
    /* EDIT ITEM func */
-   showEdit: boolean = false;
+   //showEdit: boolean = false;
    newPrice: string;
    newQuantity: string;
-   taskToEdit;
 
    onClickEdit(task){
-     this.taskToEdit = task;
-     console.log(this.taskToEdit.price)
-     this.showEdit == false ? this.showEdit = true : undefined;
+     for (let i = 0; i < this.tasks.length; i++){
+      this.tasks[i].showEdit == true ? this.tasks[i].showEdit = false: undefined;
+     }
+     task.showEdit == false ? task.showEdit = true : undefined;
    }
  
    /* UPDATE ITEM func */
-   onClickUpdateEdit(){
-    let tempPrice;
-    if(this.taskToEdit.price != parseInt(this.newPrice) && this.validInput(this.newQuantity)){
-      tempPrice =  this.taskToEdit.price;
-      this.taskToEdit.price = parseInt(this.newPrice);
-    }
-    if (parseInt(this.newQuantity) != 0 && this.validInput(this.newQuantity)){
+   onClickUpdateEdit(task){
+
+      this.totalBill = this.totalBill - task.price  * task.quantity;
+
+      task.price = parseFloat(this.newPrice);
       
-      this.totalBill = this.totalBill - tempPrice * this.taskToEdit.quantity;
-      
-      this.taskToEdit.quantity = parseInt(this.newQuantity);
-      this.totalBill = this.totalBill  +  this.taskToEdit.price * this.taskToEdit.quantity;
-    }  
-     this.showEdit == true ? this.showEdit = false : undefined;
+      task.quantity = parseFloat(this.newQuantity);
+
+      this.totalBill = this.totalBill  +  task.price * task.quantity;
+
+    
+    task.showEdit == true ? task.showEdit = false : undefined;
      this.totalBill.toFixed(2);
+     
+     this.newPrice = '';
+     this.newQuantity = '';
    }
-   onClickUpdateHide(){
-    this.showEdit == true ? this.showEdit = false : undefined;
+
+   onClickUpdateHide(task){
+    task.showEdit == true ? task.showEdit = false : undefined;
    }
 
   /* Input Validation */
-  validInput(input){
+ /*  validInput(input){
     if (!input) return false;
     if (input.trim().length==0) return false;
     if (isNaN(input)) return false;
     return true
-  } 
+  }  */
     
  
    /* TASK IS DONE on click grey out */
@@ -174,7 +203,6 @@ export class GroceryListComponent implements OnInit {
         }
         else{
           this.tasks[i].isdone = true;
-          console.log(this.tasks[i].strike)
         }
         break;
       }
@@ -186,7 +214,10 @@ export class GroceryListComponent implements OnInit {
     for(let i = 0; i < this.tasks.length; i++){
       if (this.tasks[i].id == id ) {
         this.totalBill = this.totalBill - this.tasks[i].price;
+        this.totalBill.toFixed(2);
+        
         this.tasks.splice(i, 1)
+        this.totalItems --;
         break;
       } 
     }
@@ -248,17 +279,4 @@ export class GroceryListComponent implements OnInit {
 
 
 
-  /* @Output() searchEvent = new EventEmitter<string>();
 
-  search = new FormControl('', Validators.minLength(2));
-  constructor(private showService: ShowService) { }
-
-  ngOnInit(): void {
-    this.search.valueChanges.pipe(debounceTime(1000)).subscribe(
-      (searchValue: string) => {
-      if (!this.search.invalid && searchValue){
-        this.searchEvent.emit(searchValue)
-        console.log("true")
-      }
-    })
-  }*/

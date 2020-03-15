@@ -60,8 +60,9 @@ h2{
 }
 
 .cross-icon{
-  margin-left: 95%;
+  margin-left: 98%;
   margin-bottom: -2%;
+  color:  #FB5629;
 }
 
 
@@ -69,7 +70,7 @@ h2{
 /* LIST */
 
 .list-container{
-  padding: 3%;
+  padding: 3% 10% ;
   background-color: rgb(240, 240, 240);
 }
 
@@ -115,14 +116,29 @@ h2{
   background-color: #FB5629;
   background-position: 0 -15px;
   border-color: #FB5629;
-  color: #FFFFFF;
+  color: #FFFFFF !important;
 }
 .button-list:active,
 .button-list.active {
   background-color: #FB5629;
   border-color: #FB5629;
-  color: #FFFFFF;
+  color: #FFFFFF !important;
 }
+
+.glyphicon-trash:hover {
+  color: #FFFFFF !important;
+}
+
+.glyphicon-pencil:hover{
+color: #FFFFFF !important;
+}
+
+.col-xl-10 {
+  min-height: 50px;
+  padding-top: 10px;
+}
+
+
 
 
 
@@ -131,6 +147,12 @@ h2{
 .item-container{
   padding: 3% 
 } 
+
+.no-data-message{
+  font-size: 14px;
+  font-style: italic;
+  color: #FB5629;
+}
 
 .item-image{
   max-width: 250px;
@@ -165,6 +187,10 @@ h2{
   text-align: left;
 }
 
+.empty{
+  color: rgb(165, 165, 165);
+}
+
 .task-title{
   font-size: 26px;
   font-weight: 500;
@@ -172,30 +198,37 @@ h2{
 }
 
 .task-edit{
-  padding: 3% 3%;
-  margin: 0 10% 3% 10%;
-  background-color: rgb(240, 240, 240);
+  padding: 1.5% 1.5%;
+  margin: 0 5% 3% 5%;
+  background-color: transparent;
+  border-color: rgba(255, 123, 87, 0.884);
+  border-style: solid;
+  border-width: 1px;
   font-size: 14px;
   text-align: left;
 }
 
-div.task-col:nth-child(even) {background: rgb(240, 240, 240)}
+div.task-col:nth-child(even) {background: rgb(247, 247, 247)}
 
-.task-totalbill{
-  font-size: 22px;
-  color: rgb(19, 154, 163);
-  padding: 1% 0 4% 0;
+.col-md-1{
+  min-width: 41px;
 }
 
-.hr-totalbill{
-  border: 1.2px solid rgba(19, 154, 163, 0.3);
-  margin-top: 2%;
+.col-md-2{
+  min-width: 70px;
 }
 
-.totalbill{
-  padding-left: 5%;
+.button-task:hover,
+.button-task:focus {
+  color: #FFFFFF !important;
+  background-color: #FB5629;
+  border-color: rgb(19, 154, 163);
 }
+.button-task:active,
+.button-task.active {
+  color: #FFFFFF !important;
 
+}
 
 .list-group-item{
   border: none;
@@ -210,24 +243,72 @@ input[type=checkbox]:focus{
   color: #FB5629;
 }
 
-.task-done{
-  color: rgb(194, 194, 194);
-  text-decoration:line-through;
-}
-
 .task-hover :hover{
   color: #14ADB9;
+}
+
+.task-hover :active{
+  color: rgb(194, 194, 194);
+  font-size: 15px;
+}
+
+.task-done{
+  color: rgb(194, 194, 194);
+}
+
+.task-done :hover{
+  color: rgb(194, 194, 194);
 }
 /* END - TASK*/
 
 
-.footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: #14ADB9;
-  margin-top: 4%;
-  text-align: center;
-  color: #f2f2f2;
 
+/* TOTAL BILL */
+
+.task-totalbill{
+  font-size: 18px;
+  color: #FB5629;
+}
+
+.hr-totalbill{
+  border: 1.2px solid rgba(19, 154, 163, 0.3);
+  margin-top: 2%;
+}
+
+.total-bill{
+  font-weight: 500;
+  padding-left: 2.5%;
+}
+
+.total-items{
+  font-weight: 500;
+  padding-left: 5%;
+}
+
+/* END - TOTAL BILL */
+
+
+/* TRIVIA */
+
+.quote{
+  padding: 5% 0;
+}
+
+.blockquote-custom {
+  position: relative;
+  font-size: 16;
+  color: rgb(165, 165, 165);
+}
+
+.blockquote-custom-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -25px;
+  left: 50px;
+  color: hsl(184, 80%, 40%);
 }

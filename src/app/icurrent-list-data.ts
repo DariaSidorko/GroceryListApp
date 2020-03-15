@@ -23,11 +23,6 @@ export interface ICurrentItemData {
 }
 
 
-export interface ICurrentSearchListData {
-  results: [
-    {
-      id: number,
-      title: 'string'
-    }
-  ]
+export interface ICurrentTriviaData { 
+      text: string
 }

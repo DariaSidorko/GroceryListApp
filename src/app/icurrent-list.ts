@@ -18,7 +18,6 @@ export interface ICurrentItem{
 }
 
 
-export interface ICurrentSearchList {
-  id: number,
-  title: string,
+export interface ICurrentTrivia {
+  text: string
 }

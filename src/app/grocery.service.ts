@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {HttpClient} from '@angular/common/http'
-import { ICurrentList, ICurrentItem, ICurrentSearchList } from './icurrent-list';
-import { ICurrentListData, ICurrentItemData, ICurrentSearchListData } from './icurrent-list-data';
+import { ICurrentList, ICurrentItem, ICurrentTrivia } from './icurrent-list';
+import { ICurrentListData, ICurrentItemData, ICurrentTriviaData } from './icurrent-list-data';
 import { environment } from 'src/environments/environment';
 import { map, combineAll } from 'rxjs/operators';
 
@@ -13,7 +13,6 @@ export class GroceryService {
 
   constructor(private httpClient: HttpClient, private groceryService: GroceryService) { }
 
-
   /* 
   API used:
   https://spoonacular.com/food-api
@@ -21,8 +20,19 @@ export class GroceryService {
 
 
 
+  getCurrnetTrivia() : Observable<ICurrentTrivia>{
+    return this.httpClient.get<ICurrentTriviaData>(
+      `${environment.baseUrl}api.spoonacular.com/food/trivia/random?apiKey=${environment.apiKey}`
+    ).pipe(map(data => this.transformToICurrentTrivia(data)))
+  } 
 
-  /* Original Version*/
+  transformToICurrentTrivia(data: ICurrentTriviaData) : ICurrentTrivia{ 
+    console.log(data);
+    return{
+        text: data.text
+      }
+  }
+
 
    getCurrnetList(item: string) : Observable<ICurrentList[]>{
     return this.httpClient.get<ICurrentListData>(
